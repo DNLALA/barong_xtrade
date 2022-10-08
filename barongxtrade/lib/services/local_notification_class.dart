@@ -1,37 +1,73 @@
 import 'dart:ffi';
+import 'dart:html';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter/material.dart';
 
-class LocalNotificationServec {
+class NotificationService {
+  const NotificationService._();
+
   static final FlutterLocalNotificationsPlugin _notificationsPlugin =
       FlutterLocalNotificationsPlugin();
+  static const AndroidNotificationChannel _androidNotificationChannel =
+      AndroidNotificationChannel(
+    'high_importance_channel',
+    'high_importance_channel',
+    description: 'description',
+    importance: Importance.max,
+    playSound: true,
+  );
 
-  static void initialize() {
-    final InitializationSettings initializationSettings =
-        InitializationSettings(
-            android: AndroidInitializationSettings('@mipmap/ic_launcher'));
+  static NotificationDetails _notificationDetails = NotificationDetails(
+    android: AndroidNotificationDetails(
+      _androidNotificationChannel.id,
+      _androidNotificationChannel.name,
+      channelDescription: _androidNotificationChannel.description,
+      importance: Importance.max,
+      priority: Priority.max,
+      playSound: true,
+      icon: '',
+    ),
+  );
 
-    _notificationsPlugin.initialize(initializationSettings);
+  static onMessage(RemoteMessage message) {
+    RemoteNotification? notification = message.notification;
+    AndroidNotification? androidNotification = message.notification?.android;
+    AppleNotification? appleNotification = message.notification?.apple;
+
+    if (notification == null) return;
+    if (androidNotification != null || appleNotification != null) {
+      _notificationsPlugin.show(
+        notification.hashCode,
+        notification.title,
+        notification.body,
+        _notificationDetails,
+      );
+    }
   }
 
-  static void display(RemoteMessage message) async {
-    try {
-      final id = DateTime.now().microsecondsSinceEpoch ~/ 100;
-      final NotificationDetails notificationDetails = NotificationDetails(
-        android: AndroidNotificationDetails(
-            'barongxtrade', 'barongxtrade channle',
-            priority: Priority.high, importance: Importance.max),
-      );
+  static onMessageOpenedApp(BuildContext context, RemoteMessage message) {
+    RemoteNotification? notification = message.notification;
+    AndroidNotification? androidNotification = message.notification?.android;
+    AppleNotification? appleNotification = message.notification?.apple;
 
-      await _notificationsPlugin.show(
-        id,
-        message.notification!.title,
-        message.notification!.body,
-        notificationDetails,
+    if (notification == null) return;
+    if (androidNotification != null || appleNotification != null) {
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: Text(notification.title ?? 'no title'),
+          content: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(notification.body ?? 'No Body'),
+              ],
+            ),
+          ),
+        ),
       );
-    } on Exception catch (e) {
-      print(e);
     }
   }
 }

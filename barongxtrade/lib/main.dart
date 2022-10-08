@@ -11,9 +11,9 @@ import 'package:barongxtrade/provider/dark_them_proviser.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  LocalNotificationServec.initialize();
+
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  WidgetsFlutterBinding.ensureInitialized();
+  FirebaseMessaging.onBackgroundMessage(_onBackgroundMessage);
   runApp(MyApp());
 }
 
@@ -63,4 +63,11 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-// xb 
+// xb
+
+Future<void> _onBackgroundMessage(RemoteMessage message) async {
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  print('we have recived a notification ${message.notification}');
+}
