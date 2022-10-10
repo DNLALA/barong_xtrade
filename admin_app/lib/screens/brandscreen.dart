@@ -137,7 +137,7 @@ class _MainScreenState extends State<MainScreen> {
                               color: Color.fromARGB(255, 36, 81, 140),
                               borderRadius: BorderRadius.circular(50)),
                           child: const Text(
-                            "BTC",
+                            "Input Rate",
                             style: TextStyle(
                                 fontSize: 30,
                                 color: Colors.white,
