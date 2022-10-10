@@ -1,11 +1,16 @@
+import 'package:admin_app/global/global.dart';
 import 'package:admin_app/screens/login_screen.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:admin_app/model/user_model.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../widgets/loading_dialog.dart';
 
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({Key? key}) : super(key: key);
@@ -173,14 +178,14 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     final signUpButton = Material(
       elevation: 5,
       borderRadius: BorderRadius.circular(30),
-      color: Color.fromARGB(255, 239, 216, 97),
+      color: Color(0xffffa446),
       child: MaterialButton(
           padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
           minWidth: MediaQuery.of(context).size.width,
           onPressed: () {
             signUp(emailEditingController.text, passwordEditingController.text);
           },
-          child: Text(
+          child: const Text(
             "SignUp",
             textAlign: TextAlign.center,
             style: TextStyle(
@@ -189,7 +194,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     );
 
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 36, 81, 140),
+      backgroundColor: const Color(0xff010f3b),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -233,8 +238,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           children: [
                             const Text(
                               "Already have an account?",
-                              style:
-                                  TextStyle(fontSize: 15, color: Colors.black),
+                              style: TextStyle(
+                                fontSize: 19,
+                              ),
                             ),
                             InkWell(
                               onTap: () {
@@ -265,6 +271,14 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   }
 
   void signUp(String email, String password) async {
+    showDialog(
+      context: context,
+      builder: (c) {
+        return LoadingDialogWidget(
+          message: 'Registering your account',
+        );
+      },
+    );
     if (_formKey.currentState!.validate()) {
       try {
         await _auth
@@ -296,6 +310,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           default:
             errorMessage = "An undefined Error happened.";
         }
+        Navigator.pop(context);
         Fluttertoast.showToast(msg: errorMessage!);
         print(error.code);
       }
@@ -303,6 +318,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   }
 
   postDetailsToFirestore() async {
+    final String? token = await FirebaseMessaging.instance.getToken();
+    if (token == null) return false;
     // calling our firestore
     // calling our user model
     // sedning these values
@@ -317,12 +334,20 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     userModel.uid = user.uid;
     userModel.firstName = firstNameEditingController.text;
     userModel.secondName = secondNameEditingController.text;
+    userModel.token = token;
 
     await firebaseFirestore
         .collection("Admin")
         .doc(user.uid)
         .set(userModel.toMap());
-    Fluttertoast.showToast(msg: "Account created successfully :) ");
+    Fluttertoast.showToast(msg: "Account created successfully ");
+    sharedPreferences = await SharedPreferences.getInstance();
+    await sharedPreferences!.setString("uid", user.uid);
+    await sharedPreferences!.setString("email", user.email!);
+    await sharedPreferences!
+        .setString("firstname", firstNameEditingController.text.trim());
+    await sharedPreferences!
+        .setString("secondname", secondNameEditingController.text.trim());
 
     Navigator.pushAndRemoveUntil(
         (context),

@@ -4,7 +4,6 @@ import 'package:barongxtrade/screens/welcome_view.dart';
 import 'package:barongxtrade/widgets/loading_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:barongxtrade/model/user_model.dart';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -342,7 +341,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         .doc(user.uid)
         .set(userModel.toMap());
 
-    Fluttertoast.showToast(msg: "Account created successfully :) ");
+    Fluttertoast.showToast(msg: "Account created successfully ");
     sharedPreferences = await SharedPreferences.getInstance();
     await sharedPreferences!.setString("uid", user.uid);
     await sharedPreferences!.setString("email", user.email!);

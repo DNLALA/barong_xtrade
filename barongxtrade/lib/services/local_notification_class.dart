@@ -70,4 +70,8 @@ class NotificationService {
       );
     }
   }
+
+  static initializeNotification() {}
+
+  
 }

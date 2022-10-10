@@ -2,7 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:barongxtrade/functions/functions.dart';
-import 'package:barongxtrade/global/global.dart';
+
+import '../global/global.dart';
 
 class PushNotificationsSystem {
   FirebaseMessaging messaging = FirebaseMessaging.instance;
@@ -48,31 +49,11 @@ class PushNotificationsSystem {
     });
   }
 
-  //device recognition token
-  Future generateDeviceRecognitionToken() async {
-    String? registrationDeviceToken = await messaging.getToken();
-
-    FirebaseFirestore.instance.collection("users").doc().update({
-      "sellerDeviceToken": registrationDeviceToken,
-    });
-
-    messaging.subscribeToTopic("allAdmin");
-    messaging.subscribeToTopic("allUsers");
-  }
-
-  showNotificationWhenOpenApp(orderID, context) async {
-    await FirebaseFirestore.instance
-        .collection("orders")
-        .doc(orderID)
-        .get()
-        .then((snapshot) {
-      if (snapshot.data()!["status"] == "ended") {
-        showReusableSnackBar(context,
-            "Order ID # $orderID \n\n has delivered & received by the user.");
-      } else {
-        showReusableSnackBar(context,
-            "you have new Order. \nOrder ID # $orderID \n\n Please Check now.");
-      }
-    });
+  
+  showNotificationWhenOpenApp(userOrderId, context) {
+    showReusableSnackBar(
+      context,
+      "your Parcel (# $userOrderId) has been shifted successfully by the seller.",
+    );
   }
 }

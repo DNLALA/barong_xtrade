@@ -14,7 +14,13 @@ void main() async {
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   FirebaseMessaging.onBackgroundMessage(_onBackgroundMessage);
+  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+    alert: true,
+    badge: false,
+    sound: true,
+  );
   runApp(MyApp());
+  await NotificationService.initializeNotification();
 }
 
 class MyApp extends StatefulWidget {

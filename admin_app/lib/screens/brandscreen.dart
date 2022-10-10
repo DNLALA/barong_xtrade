@@ -1,10 +1,11 @@
-import 'package:admin_app/screens/first.dart';
 import 'package:admin_app/screens/items.dart';
 import 'package:admin_app/screens/uploadcoin.dart';
+import 'package:admin_app/screens/usdt.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../model/user_model.dart';
+import 'profile_view.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -25,18 +26,6 @@ class _MainScreenState extends State<MainScreen> {
         child: Scaffold(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           resizeToAvoidBottomInset: true,
-          appBar: AppBar(
-            centerTitle: true,
-            actions: [
-              IconButton(
-                onPressed: (() {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: ((context) => const Items())));
-                }),
-                icon: const Icon(Icons.add),
-              ),
-            ],
-          ),
           body: ListView(
             children: [
               Padding(
@@ -46,7 +35,7 @@ class _MainScreenState extends State<MainScreen> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const SigUpPage()));
+                            builder: (context) => const EditProfilePage()));
                   },
                   child: ListTile(
                     tileColor: Color.fromARGB(255, 3, 100, 175),
@@ -55,7 +44,7 @@ class _MainScreenState extends State<MainScreen> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const SigUpPage()));
+                              builder: (context) => const EditProfilePage()));
                     },
                     selected: true,
                     shape: const RoundedRectangleBorder(
@@ -87,12 +76,76 @@ class _MainScreenState extends State<MainScreen> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => const SigUpPage()));
+                                    builder: (context) =>
+                                        const EditProfilePage()));
                           },
                         ),
                       ),
                       menuList: [],
                     ),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 100,
+              ),
+              SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: Column(
+                    children: [
+                      InkWell(
+                        onTap: (() {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ItemList(),
+                              ));
+                        }),
+                        child: Container(
+                          alignment: Alignment.center,
+                          height: 60,
+                          width: 400,
+                          decoration: BoxDecoration(
+                              color: Color.fromARGB(255, 239, 216, 97),
+                              borderRadius: BorderRadius.circular(50)),
+                          child: const Text(
+                            "Transcations",
+                            style: TextStyle(
+                                fontSize: 30,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 100,
+                      ),
+                      InkWell(
+                        onTap: (() {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ItemList(),
+                              ));
+                        }),
+                        child: Container(
+                          alignment: Alignment.center,
+                          height: 60,
+                          width: 400,
+                          decoration: BoxDecoration(
+                              color: Color.fromARGB(255, 36, 81, 140),
+                              borderRadius: BorderRadius.circular(50)),
+                          child: const Text(
+                            "BTC",
+                            style: TextStyle(
+                                fontSize: 30,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),

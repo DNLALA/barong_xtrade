@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:admin_app/consta/them_data.dart';
 import 'package:admin_app/provider/dark_them_proviser.dart';
-import 'package:admin_app/screens/first.dart';
-import 'package:admin_app/screens/home_screen.dart';
 import 'package:admin_app/services/dark%20_them_path.dart';
 
 void main() async {

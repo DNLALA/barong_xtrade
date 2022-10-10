@@ -41,9 +41,6 @@ class _HomePageState extends State<HomePage> {
       this.loggedInUser = UserModel.fromMap(value.data());
       setState(() {});
     });
-
-    PushNotificationsSystem pushNotificationsSystem = PushNotificationsSystem();
-    pushNotificationsSystem.generateDeviceRecognitionToken();
   }
 
   @override

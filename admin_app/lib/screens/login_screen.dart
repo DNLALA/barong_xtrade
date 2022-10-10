@@ -1,10 +1,11 @@
 import 'package:admin_app/screens/brandscreen.dart';
-import 'package:admin_app/screens/first.dart';
 import 'package:admin_app/screens/registration_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+
+import '../widgets/loading_dialog.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -90,7 +91,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final loginButton = Material(
       elevation: 5,
       borderRadius: BorderRadius.circular(30),
-      color: Color.fromARGB(255, 36, 81, 140),
+      color: const Color(0xff010f3b),
       child: MaterialButton(
           padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
           minWidth: MediaQuery.of(context).size.width,
@@ -106,7 +107,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
 
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 36, 81, 140),
+      backgroundColor: const Color(0xff010f3b),
       body: Center(
         child: SingleChildScrollView(
           child: Container(
@@ -123,7 +124,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: Text(
                         'Welcome Back',
                         style: TextStyle(
-                          color: Color.fromARGB(255, 239, 216, 97),
+                          color: Color(0xffffa446),
                           fontSize: 30,
                           fontWeight: FontWeight.bold,
                         ),
@@ -151,7 +152,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             child: const Text(
                               "SignUp",
                               style: TextStyle(
-                                  color: Color.fromARGB(255, 239, 216, 97),
+                                  color: Color(0xffffa446),
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15),
                             ),
@@ -169,6 +170,14 @@ class _LoginScreenState extends State<LoginScreen> {
 
   // login function
   void signIn(String email, String password) async {
+    showDialog(
+      context: context,
+      builder: (c) {
+        return LoadingDialogWidget(
+          message: 'Checking credentials',
+        );
+      },
+    );
     if (_formKey.currentState!.validate()) {
       try {
         await FirebaseFirestore.instance.collection('Admin').get().then((uid) =>
@@ -201,6 +210,7 @@ class _LoginScreenState extends State<LoginScreen> {
           default:
             errorMessage = "An undefined Error happened.";
         }
+        Navigator.pop(context);
         Fluttertoast.showToast(msg: errorMessage!);
         print(error.code);
       }

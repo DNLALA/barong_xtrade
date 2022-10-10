@@ -6,6 +6,8 @@ import 'package:barongxtrade/screens/finaly.dart';
 import 'package:barongxtrade/services/firebase_auth_service.dart';
 import 'package:barongxtrade/widgets/costm_textfl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
@@ -204,6 +206,7 @@ class _AccountState extends State<Account> {
                         MaterialStateProperty.all(Color(0xffffa446)),
                   ),
                   onPressed: () {
+                    
                     if (imageUrl.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                           content: Text(
